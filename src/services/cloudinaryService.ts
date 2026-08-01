@@ -1,12 +1,8 @@
-// Cloudinary configuration for frontend
 export const cloudinaryConfig = {
   cloudName: 'dgiggtwoy',
   apiKey: '664998912519217',
-  // Note: API secret should never be exposed in frontend code
-  // All uploads should go through the backend for security
 };
 
-// Helper function to get optimized image URLs
 export const getOptimizedImageUrl = (
   publicId: string,
   options: {
@@ -36,7 +32,6 @@ export const getOptimizedImageUrl = (
   return `https://res.cloudinary.com/${cloudinaryConfig.cloudName}/image/upload/${transformations}/${publicId}`;
 };
 
-// Helper function to get thumbnail URLs
 export const getThumbnailUrl = (publicId: string, size: number = 300) => {
   return getOptimizedImageUrl(publicId, {
     width: size,
@@ -46,7 +41,6 @@ export const getThumbnailUrl = (publicId: string, size: number = 300) => {
   });
 };
 
-// Helper function to get responsive image URLs
 export const getResponsiveImageUrl = (publicId: string, width: number) => {
   return getOptimizedImageUrl(publicId, {
     width,
@@ -56,13 +50,11 @@ export const getResponsiveImageUrl = (publicId: string, width: number) => {
   });
 };
 
-// Helper function to extract public ID from Cloudinary URL
 export const extractPublicId = (url: string): string | null => {
   const match = url.match(/\/upload\/(?:v\d+\/)?(.+?)(?:\.[^.]+)?$/);
   return match ? match[1] : null;
 };
 
-// Helper function to get different image sizes for responsive design
 export const getResponsiveImageSet = (publicId: string) => {
   return {
     thumbnail: getThumbnailUrl(publicId, 150),

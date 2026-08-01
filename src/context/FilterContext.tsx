@@ -6,14 +6,8 @@ export interface FilterOptions {
   festivals: string[];
   themes: string[];
   weights: string[];
-  priceRanges: {
-    min: number;
-    max: number;
-  };
-  weightRanges?: {
-    min: number;
-    max: number;
-  };
+  priceRanges: { min: number; max: number; };
+  weightRanges?: { min: number; max: number; };
   categories: string[];
 }
 
@@ -42,9 +36,7 @@ const FilterContext = createContext<FilterContextType | undefined>(undefined);
 
 export const useFilters = () => {
   const context = useContext(FilterContext);
-  if (!context) {
-    throw new Error('useFilters must be used within a FilterProvider');
-  }
+  if (!context) throw new Error('useFilters must be used within a FilterProvider');
   return context;
 };
 
@@ -56,7 +48,6 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
   const [filterOptions, setFilterOptions] = useState<FilterOptions | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   const [filterState, setFilterState] = useState<FilterState>({
     selectedFestivals: [],
     selectedFragrances: [],
@@ -73,23 +64,13 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
       setError(null);
       const response = await axios.get('/api/filters');
       setFilterOptions(response.data);
-
-      // Update price range and weight range if we have new data
       if (response.data.priceRanges) {
-        setFilterState(prev => ({
-          ...prev,
-          priceRange: [response.data.priceRanges.min, response.data.priceRanges.max]
-        }));
+        setFilterState(prev => ({ ...prev, priceRange: [response.data.priceRanges.min, response.data.priceRanges.max] }));
       }
-
       if (response.data.weightRanges) {
-        setFilterState(prev => ({
-          ...prev,
-          weightRange: [response.data.weightRanges.min, response.data.weightRanges.max]
-        }));
+        setFilterState(prev => ({ ...prev, weightRange: [response.data.weightRanges.min, response.data.weightRanges.max] }));
       }
     } catch (err: unknown) {
-      console.error('Error fetching filter options:', err);
       const message = (axios.isAxiosError(err) && err.response?.data?.message)
         || (err instanceof Error ? err.message : 'Failed to fetch filter options');
       setError(message);
@@ -98,109 +79,41 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
     }
   }, []);
 
-  const refreshFilters = useCallback(async () => {
-    await fetchFilterOptions();
-  }, [fetchFilterOptions]);
-
-  const updateFilterState = useCallback((newState: Partial<FilterState>) => {
-    setFilterState(prev => ({ ...prev, ...newState }));
-  }, []);
+  const refreshFilters = useCallback(async () => { await fetchFilterOptions(); }, [fetchFilterOptions]);
+  const updateFilterState = useCallback((newState: Partial<FilterState>) => { setFilterState(prev => ({ ...prev, ...newState })); }, []);
 
   const resetFilters = useCallback(() => {
-    // Use fallback values if filterOptions is not loaded yet
-    const defaultMinPrice = filterOptions?.priceRanges?.min || 0;
-    const defaultMaxPrice = filterOptions?.priceRanges?.max || 1000;
-    const defaultMinWeight = filterOptions?.weightRanges?.min || 0;
-    const defaultMaxWeight = filterOptions?.weightRanges?.max || 1000;
-
     setFilterState({
       selectedFestivals: [],
       selectedFragrances: [],
       selectedThemes: [],
       selectedWeights: [],
-      priceRange: [defaultMinPrice, defaultMaxPrice],
-      weightRange: [defaultMinWeight, defaultMaxWeight],
+      priceRange: [filterOptions?.priceRanges?.min || 0, filterOptions?.priceRanges?.max || 1000],
+      weightRange: [filterOptions?.weightRanges?.min || 0, filterOptions?.weightRanges?.max || 1000],
       selectedCategories: [],
     });
   }, [filterOptions]);
 
   const applyCollectionFilter = useCallback((collectionTitle: string) => {
     if (!filterOptions) return;
-
     const title = collectionTitle.toLowerCase().trim();
-
-    // Check if title matches any festival
-    const matchingFestival = filterOptions.festivals.find(festival =>
-      festival.toLowerCase().includes(title) || title.includes(festival.toLowerCase())
-    );
-
-    // Check if title matches any fragrance
-    const matchingFragrance = filterOptions.fragrances.find(fragrance =>
-      fragrance.toLowerCase().includes(title) || title.includes(fragrance.toLowerCase())
-    );
-
-    // Check if title matches any theme
-    const matchingTheme = filterOptions.themes.find(theme =>
-      theme.toLowerCase().includes(title) || title.includes(theme.toLowerCase())
-    );
-
-    // Check if title matches any weight
-    const matchingWeight = filterOptions.weights.find(weight =>
-      weight.toLowerCase().includes(title) || title.includes(weight.toLowerCase())
-    );
-
-    // Check if title matches any category
-    const matchingCategory = filterOptions.categories.find(category =>
-      category.toLowerCase().includes(title) || title.includes(category.toLowerCase())
-    );
-
-    // Apply the first match found
-    if (matchingFestival) {
-      setFilterState(prev => ({
-        ...prev,
-        selectedFestivals: [matchingFestival]
-      }));
-    } else if (matchingFragrance) {
-      setFilterState(prev => ({
-        ...prev,
-        selectedFragrances: [matchingFragrance]
-      }));
-    } else if (matchingTheme) {
-      setFilterState(prev => ({
-        ...prev,
-        selectedThemes: [matchingTheme]
-      }));
-    } else if (matchingWeight) {
-      setFilterState(prev => ({
-        ...prev,
-        selectedWeights: [matchingWeight]
-      }));
-    } else if (matchingCategory) {
-      setFilterState(prev => ({
-        ...prev,
-        selectedCategories: [matchingCategory]
-      }));
-    }
+    const matchingFestival = filterOptions.festivals.find(f => f.toLowerCase().includes(title) || title.includes(f.toLowerCase()));
+    const matchingFragrance = filterOptions.fragrances.find(f => f.toLowerCase().includes(title) || title.includes(f.toLowerCase()));
+    const matchingTheme = filterOptions.themes.find(t => t.toLowerCase().includes(title) || title.includes(t.toLowerCase()));
+    const matchingWeight = filterOptions.weights.find(w => w.toLowerCase().includes(title) || title.includes(w.toLowerCase()));
+    const matchingCategory = filterOptions.categories.find(c => c.toLowerCase().includes(title) || title.includes(c.toLowerCase()));
+    if (matchingFestival) setFilterState(prev => ({ ...prev, selectedFestivals: [matchingFestival] }));
+    else if (matchingFragrance) setFilterState(prev => ({ ...prev, selectedFragrances: [matchingFragrance] }));
+    else if (matchingTheme) setFilterState(prev => ({ ...prev, selectedThemes: [matchingTheme] }));
+    else if (matchingWeight) setFilterState(prev => ({ ...prev, selectedWeights: [matchingWeight] }));
+    else if (matchingCategory) setFilterState(prev => ({ ...prev, selectedCategories: [matchingCategory] }));
   }, [filterOptions]);
 
-  useEffect(() => {
-    fetchFilterOptions();
-  }, [fetchFilterOptions]);
+  useEffect(() => { fetchFilterOptions(); }, [fetchFilterOptions]);
 
   const value: FilterContextType = useMemo(() => ({
-    filterOptions,
-    filterState,
-    loading,
-    error,
-    updateFilterState,
-    refreshFilters,
-    resetFilters,
-    applyCollectionFilter,
+    filterOptions, filterState, loading, error, updateFilterState, refreshFilters, resetFilters, applyCollectionFilter,
   }), [filterOptions, filterState, loading, error, updateFilterState, refreshFilters, resetFilters, applyCollectionFilter]);
 
-  return (
-    <FilterContext.Provider value={value}>
-      {children}
-    </FilterContext.Provider>
-  );
+  return <FilterContext.Provider value={value}>{children}</FilterContext.Provider>;
 };

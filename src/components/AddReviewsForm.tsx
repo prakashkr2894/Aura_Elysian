@@ -109,7 +109,6 @@ export const AddReviewsForm: React.FC = () => {
         productId: "",
       });
     } catch (error) {
-      console.error("Error adding review:", error);
       alert("Failed to add review.");
     }
   };

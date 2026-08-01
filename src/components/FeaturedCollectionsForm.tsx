@@ -45,7 +45,6 @@ export const FeaturedCollectionsForm: React.FC<FeaturedCollectionsFormProps> = (
       const response = await axios.get('/api/featured-collections');
       setCollections(response.data);
     } catch (error) {
-      console.error('Error fetching collections:', error);
     }
   };
 
@@ -65,7 +64,6 @@ export const FeaturedCollectionsForm: React.FC<FeaturedCollectionsFormProps> = (
       alert('Collection deleted successfully');
       fetchCollections();
     } catch (error) {
-      console.error('Error deleting collection:', error);
       alert('Failed to delete collection');
     }
   };
@@ -109,7 +107,6 @@ export const FeaturedCollectionsForm: React.FC<FeaturedCollectionsFormProps> = (
       fetchCollections();
       onSuccess?.();
     } catch (error) {
-      console.error('Error adding collection:', error);
       alert('Failed to add collection');
     } finally {
       setLoading(false);
@@ -162,10 +159,6 @@ export const FeaturedCollectionsForm: React.FC<FeaturedCollectionsFormProps> = (
             className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-300"
           />
         </div>
-
-
-
-
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">

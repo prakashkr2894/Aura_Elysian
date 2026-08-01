@@ -58,30 +58,22 @@ const CandleDetailsPage: React.FC = () => {
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
   const [currentMainImage, setCurrentMainImage] = useState<string | null>(null);
 
-
-
-  // Get current quantity of this product in cart from context
   const cartItem = cart.find(item => item.productId === id);
   const cartQuantity = cartItem ? cartItem.quantity : 0;
 
-  // Handler to update quantity in cart using context method
   const handleQuantityChange = (newQuantity: number) => {
     if (newQuantity < 0) return;
     updateCartItemQuantity(id!, newQuantity);
   };
 
-  // Preload all product images using the cache service
   const preloadProductImages = useCallback(async (images: string[]) => {
     await imageCacheService.preloadImages(images);
   }, []);
 
-  // Memoized product images for performance
   const productImages = useMemo(() => {
     if (!product?.images) return [];
     return product.images.filter(Boolean);
   }, [product?.images]);
-
-
 
   const handleBuyNow = () => {
     const token = localStorage.getItem('token');
@@ -130,7 +122,6 @@ const CandleDetailsPage: React.FC = () => {
         },
       });
       alert('Review submitted successfully!');
-      // Optimistically update product rating and reviews count
       setProduct(prev => {
         if (!prev) return prev;
         const prevReviews = typeof prev.reviews === 'number' ? prev.reviews : 0;
@@ -142,15 +133,12 @@ const CandleDetailsPage: React.FC = () => {
       setReviewText('');
       setReviewImages([]);
       setRating(0);
-      // Refresh reviews
       const response = await axios.get(`/api/products/${id}/reviews`);
       setReviews(response.data);
-      // Refresh product from server to ensure consistency
       const productRes = await axios.get(`/api/products/${id}`);
       setProduct(productRes.data);
 
     } catch (error) {
-      console.error('Error submitting review:', error);
       alert('Failed to submit review');
     } finally {
       setLoadingReview(false);
@@ -162,15 +150,12 @@ const CandleDetailsPage: React.FC = () => {
       try {
         const response = await axios.get(`/api/products/${id}`);
         setProduct(response.data);
-        // Set initial main image to primaryImage
         setCurrentMainImage(response.data.primaryImage);
 
-        // Preload all product images
         if (response.data.images && response.data.images.length > 0) {
           preloadProductImages(response.data.images);
         }
       } catch (error) {
-        console.error('Failed to load product:', error);
         setError('Failed to load product');
       } finally {
         setLoading(false);
@@ -188,7 +173,6 @@ const CandleDetailsPage: React.FC = () => {
         const response = await axios.get(`/api/products/${id}/reviews`);
         setReviews(response.data);
       } catch (error) {
-        console.error('Failed to load reviews:', error);
       }
     };
 
@@ -196,11 +180,6 @@ const CandleDetailsPage: React.FC = () => {
       fetchReviews();
     }
   }, [id]);
-
-
-
-
-
 
   if (loading) {
     return (
@@ -235,7 +214,6 @@ const CandleDetailsPage: React.FC = () => {
         <ArrowLeft className="h-6 w-6" />
       </button>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-
 
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
 
@@ -406,7 +384,6 @@ const CandleDetailsPage: React.FC = () => {
                         />
                       </div>
                     </div>
-
 
                     {/* Name */}
                     <div className="text-center mb-2">

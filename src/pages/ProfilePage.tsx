@@ -32,39 +32,31 @@ export const ProfilePage: React.FC = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token') || localStorage.getItem('aura-token');
-    console.log('ProfilePage - Token from localStorage:', token ? 'Found' : 'Not found');
-    console.log('ProfilePage - Token value:', token);
     if (!token) {
-      console.log('ProfilePage - No token found, redirecting to login');
       navigate('/login');
       return;
     }
 
-    // Fetch user profile from API
     const fetchUserProfile = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/profile`, {
+        const response = await fetch(`/api/profile`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
         });
         if (response.ok) {
           const data = await response.json();
-          console.log('Fetched user profile:', data.user);
           setUser(data.user);
         } else {
-          console.error('Failed to fetch user profile');
           navigate('/login');
         }
       } catch (error) {
-        console.error('Error fetching user profile:', error);
         navigate('/login');
       }
     };
 
     fetchUserProfile();
 
-    // Mock orders data - in real app, fetch from API
     setOrders([
     ]);
   }, [navigate]);
@@ -83,7 +75,7 @@ export const ProfilePage: React.FC = () => {
   const handleSaveMobile = async () => {
     const token = localStorage.getItem('token') || localStorage.getItem('aura-token');
     try {
-      const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/profile`, {
+      const response = await fetch(`/api/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -96,10 +88,8 @@ export const ProfilePage: React.FC = () => {
         setUser(data.user);
         setIsEditingMobile(false);
       } else {
-        console.error('Failed to update mobile');
       }
     } catch (error) {
-      console.error('Error updating mobile:', error);
     }
   };
 
@@ -116,7 +106,7 @@ export const ProfilePage: React.FC = () => {
   const handleSaveAddress = async () => {
     const token = localStorage.getItem('token') || localStorage.getItem('aura-token');
     try {
-      const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/profile`, {
+      const response = await fetch(`/api/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -129,10 +119,8 @@ export const ProfilePage: React.FC = () => {
         setUser(data.user);
         setIsEditingAddress(false);
       } else {
-        console.error('Failed to update address');
       }
     } catch (error) {
-      console.error('Error updating address:', error);
     }
   };
 
@@ -148,7 +136,7 @@ export const ProfilePage: React.FC = () => {
       const formData = new FormData();
       formData.append('image', imageFile);
 
-      const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/profile`, {
+      const response = await fetch(`/api/profile`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -157,14 +145,11 @@ export const ProfilePage: React.FC = () => {
       });
       if (response.ok) {
         const data = await response.json();
-        console.log('Profile update response:', data);
         setUser(data.user);
         setImageFile(null);
       } else {
-        console.error('Failed to update image');
       }
     } catch (error) {
-      console.error('Error updating image:', error);
     }
   };
 
@@ -189,7 +174,6 @@ export const ProfilePage: React.FC = () => {
             <div className="relative w-24 h-24 mx-auto mb-4">
               <img
                 src={imageFile ? URL.createObjectURL(imageFile) : (user.image ? (() => {
-                  console.log('Using user image URL:', user.image);
                   return user.image;
                 })() : 'https://via.placeholder.com/96x96/cccccc/000000?text=Profile')}
                 alt={user.name}
@@ -234,8 +218,6 @@ export const ProfilePage: React.FC = () => {
                 <p className="text-sm text-gray-500">Full Name</p>
               </div>
             </div>
-
-
 
             <div className="flex items-center p-4 bg-gray-50 rounded-lg">
               <Mail className="h-6 w-6 text-pink-500 mr-4" />

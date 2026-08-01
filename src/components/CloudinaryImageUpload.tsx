@@ -30,14 +30,12 @@ export const CloudinaryImageUpload: React.FC<CloudinaryImageUploadProps> = ({
     
     if (files.length === 0) return;
 
-    // Validate file types
     const validFiles = files.filter(file => file.type.startsWith('image/'));
     if (validFiles.length !== files.length) {
       alert('Please select only image files');
       return;
     }
 
-    // Validate file count
     if (multiple && validFiles.length > maxFiles) {
       alert(`Please select no more than ${maxFiles} images`);
       return;
@@ -45,7 +43,6 @@ export const CloudinaryImageUpload: React.FC<CloudinaryImageUploadProps> = ({
 
     setSelectedFiles(validFiles);
     
-    // Create preview URLs
     const urls = validFiles.map(file => URL.createObjectURL(file));
     setPreviewUrls(urls);
   };
@@ -63,14 +60,13 @@ export const CloudinaryImageUpload: React.FC<CloudinaryImageUploadProps> = ({
         onImageUpload(result.secure_url);
       }
       
-      // Clear selections after successful upload
       setSelectedFiles([]);
       setPreviewUrls([]);
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
     } catch (err) {
-      console.error('Upload failed:', err);
+
     }
   };
 

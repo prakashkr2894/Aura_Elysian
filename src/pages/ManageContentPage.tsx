@@ -50,7 +50,6 @@ export const ManageContentPage: React.FC = () => {
     FeaturedCollection[]
   >([]);
 
-  // Form states for adding new content
   const [newTestimonial, setNewTestimonial] = useState({
     name: "",
     text: "",
@@ -69,7 +68,6 @@ export const ManageContentPage: React.FC = () => {
     container: "",
   });
 
-  // Form states for featured collections
   const [newCollection, setNewCollection] = useState({
     name: "",
     title: "",
@@ -83,14 +81,12 @@ export const ManageContentPage: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-    // Check if token is valid on component mount
     checkTokenValidity();
   }, []);
 
   const checkTokenValidity = async () => {
     const token = localStorage.getItem("aura-token");
     if (!token) {
-      console.log("No token found in localStorage");
       return;
     }
 
@@ -98,11 +94,8 @@ export const ManageContentPage: React.FC = () => {
       const response = await axios.get("/api/auth/verify", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log("Token is valid:", response.data);
     } catch (error: unknown) {
-      console.error("Token validation failed:", error);
       if (error && typeof error === 'object' && 'response' in error && error.response && typeof error.response === 'object' && 'status' in error.response && error.response.status === 401) {
-        console.log("Token is invalid or expired, redirecting to login");
         localStorage.removeItem("aura-token");
         window.location.href = "/team/login";
       }
@@ -120,11 +113,9 @@ export const ManageContentPage: React.FC = () => {
       setTrendingProducts(trendRes.data);
       setFeaturedCollections(collectionsRes.data);
     } catch (error) {
-      console.error("Error fetching data:", error);
     }
   };
 
-  // Handlers for form inputs
   const handleTestimonialChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -144,11 +135,6 @@ export const ManageContentPage: React.FC = () => {
     setNewTestimonial((prev) => ({ ...prev, rating }));
   };
 
-  // Removed unused handler 'handleTrendingProductChange'
-
-  // Removed unused handler 'handleTrendingProductImagesChange'
-
-  // Submit handlers
   const submitTestimonial = async (e: React.FormEvent) => {
     e.preventDefault();
     const token = localStorage.getItem("aura-token");
@@ -174,7 +160,6 @@ export const ManageContentPage: React.FC = () => {
       setNewTestimonial({ name: "", text: "", rating: 5, image: null });
       fetchData();
     } catch (error) {
-      console.error("Error adding testimonial:", error);
       alert("Failed to add testimonial");
     }
   };
@@ -195,7 +180,6 @@ export const ManageContentPage: React.FC = () => {
       alert("Testimonial deleted successfully");
       fetchData();
     } catch (error) {
-      console.error("Error deleting testimonial:", error);
       alert("Failed to delete testimonial");
     }
   };
@@ -229,7 +213,6 @@ export const ManageContentPage: React.FC = () => {
       });
       fetchData();
     } catch (error) {
-      console.error("Error adding trending product:", error);
       alert("Failed to add trending product");
     }
   };
@@ -250,12 +233,10 @@ export const ManageContentPage: React.FC = () => {
       alert("Trending product removed successfully");
       fetchData();
     } catch (error) {
-      console.error("Error removing trending product:", error);
       alert("Failed to remove trending product");
     }
   };
 
-  // Featured Collections handlers
   const handleCollectionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewCollection((prev) => ({ ...prev, [name]: value }));
@@ -290,10 +271,6 @@ export const ManageContentPage: React.FC = () => {
     setLoading(true);
     const token =
       localStorage.getItem("aura-token") || localStorage.getItem("token");
-    console.log(
-      "Token from localStorage:",
-      token ? "Token exists" : "No token found",
-    );
 
     if (!token) {
       alert("Please login to add collection");
@@ -301,14 +278,11 @@ export const ManageContentPage: React.FC = () => {
       return;
     }
 
-    // Test token validity first
     try {
       const testResponse = await axios.get("/api/auth/verify", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log("Token is valid:", testResponse.data);
     } catch (testError: unknown) {
-      console.error("Token validation failed:", testError);
       if (testError && typeof testError === 'object' && 'response' in testError && testError.response && typeof testError.response === 'object' && 'status' in testError.response && testError.response.status === 401) {
         alert("Your session has expired. Please login again.");
         localStorage.removeItem("aura-token");
@@ -333,11 +307,6 @@ export const ManageContentPage: React.FC = () => {
         formData.append("image", image);
       });
 
-      console.log(
-        "Sending request with token:",
-        token.substring(0, 20) + "...",
-      );
-
       await axios.post("/api/featured-collections", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -357,7 +326,6 @@ export const ManageContentPage: React.FC = () => {
       });
       fetchData();
     } catch (error: unknown) {
-      console.error("Error adding collection:", error);
       if (error && typeof error === 'object' && 'response' in error && error.response && typeof error.response === 'object' && 'status' in error.response && error.response.status === 401) {
         alert("Authentication failed. Please login again.");
         localStorage.removeItem("aura-token");
@@ -386,7 +354,6 @@ export const ManageContentPage: React.FC = () => {
       alert("Collection deleted successfully");
       fetchData();
     } catch (error) {
-      console.error("Error deleting collection:", error);
       alert("Failed to delete collection");
     }
   };

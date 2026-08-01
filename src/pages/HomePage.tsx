@@ -6,7 +6,6 @@ import { ArrowRight, Sparkles, Gift, Star, ChevronRight } from 'lucide-react';
 import { ProductCard } from '../components/ProductCard';
 import { useImagePreload } from '../hooks/useImagePreload';
 
-// Data Interfaces
 interface Product {
   _id: string;
   id: string;
@@ -45,7 +44,6 @@ export const HomePage: React.FC = () => {
   const [featuredCollections, setFeaturedCollections] = useState<FeaturedCollection[]>([]);
   const [productQuantities, setProductQuantities] = useState<{ [key: string]: number }>({});
 
-  // Preload featured product images for better performance
   const featuredProductImages = featuredProducts.map(product => product.primaryImage);
   useImagePreload(featuredProductImages, featuredProducts.length > 0);
 
@@ -64,7 +62,6 @@ export const HomePage: React.FC = () => {
         const collectionsRes = await axios.get('/api/featured-collections');
         setFeaturedCollections(collectionsRes.data);
       } catch (error) {
-        console.error("Error fetching data:", error);
       }
     };
 
@@ -78,7 +75,6 @@ export const HomePage: React.FC = () => {
     }));
   }, []);
 
-  // Function to get grid classes based on product count - always 2 columns on mobile
   const getGridClasses = (productCount: number) => {
     if (productCount === 1) {
       return "grid grid-cols-1 gap-4 sm:gap-8 max-w-2xl mx-auto";
@@ -87,7 +83,6 @@ export const HomePage: React.FC = () => {
     }
   };
 
-  // Shuffle function to randomize array order
   const shuffleArray = <T,>(array: T[]): T[] => {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -97,11 +92,9 @@ export const HomePage: React.FC = () => {
     return shuffled;
   };
 
-  // Featured Collection Card Component with All 4 Images Displayed
   const FeaturedCollectionCard: React.FC<{ collection: FeaturedCollection }> = ({ collection }) => {
     const navigate = useNavigate();
 
-    // Get images array - use images if available, otherwise fallback to single image
     const images = collection.images && collection.images.length > 0
       ? collection.images
       : [collection.image, collection.image, collection.image, collection.image]; // Fallback to single image repeated
@@ -483,7 +476,7 @@ export const HomePage: React.FC = () => {
               >
                 <ProductCard
                   product={product}
-                  onLike={(id: string) => console.log('Liked product:', id)}
+                  onLike={() => {}}
                   onCartUpdate={handleCartUpdate}
                   quantity={productQuantities[product.id] || 0}
                 />
@@ -592,7 +585,6 @@ export const HomePage: React.FC = () => {
           </motion.div>
         </div>
       </section>
-
 
     </motion.div>
   );

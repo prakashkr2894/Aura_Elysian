@@ -22,7 +22,6 @@ interface FormData {
   rating?: string;
 }
 
-// Props Interfaces for each step
 interface Step1Props {
   nextStep: () => void;
   formData: FormData;
@@ -129,13 +128,10 @@ export const AddProductForm: React.FC = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log("Product added successfully:", response.data);
       alert("Product added successfully!");
 
-      // Refresh filters to include the new product data
       await refreshFilters();
 
-      // Optionally reset form
       setStep(1);
       setFormData({
         productName: "",
@@ -152,7 +148,6 @@ export const AddProductForm: React.FC = () => {
         rating: "",
       });
     } catch (error) {
-      console.error("Error adding product:", error);
       alert("Failed to add product.");
     }
   };

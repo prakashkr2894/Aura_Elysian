@@ -28,29 +28,23 @@ export const useProductFilters = (products: Product[]) => {
     if (!products.length) return [];
 
     return products.filter(product => {
-      // Price filter
       const priceMatch = product.price >= filterState.priceRange[0] &&
                         product.price <= filterState.priceRange[1];
 
-      // Festival filter
       const festivalMatch = filterState.selectedFestivals.length === 0 ||
         (product.festival && product.festival.some(f =>
           filterState.selectedFestivals.includes(f)
         ));
 
-      // Fragrance filter
       const fragranceMatch = filterState.selectedFragrances.length === 0 ||
         (product.fragrance && filterState.selectedFragrances.includes(product.fragrance));
 
-      // Theme filter
       const themeMatch = filterState.selectedThemes.length === 0 ||
         (product.theme && filterState.selectedThemes.includes(product.theme));
 
-      // Weight filter
       const weightMatch = filterState.selectedWeights.length === 0 ||
         (product.weight && filterState.selectedWeights.includes(product.weight));
 
-      // Category filter
       const categoryMatch = filterState.selectedCategories.length === 0 ||
         filterState.selectedCategories.includes(product.category);
 

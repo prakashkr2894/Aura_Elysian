@@ -8,7 +8,7 @@ export const useImagePreload = (images: string[], enabled: boolean = true) => {
     try {
       await imageCacheService.preloadImages(images);
     } catch (error) {
-      console.warn('Failed to preload images:', error);
+
     }
   }, [images, enabled]);
 

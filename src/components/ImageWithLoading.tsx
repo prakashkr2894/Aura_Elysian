@@ -40,7 +40,6 @@ const ImageWithLoadingComponent: React.FC<ImageWithLoadingProps> = ({
   const spinnerTimeoutRef = useRef<number>();
 
   useEffect(() => {
-    // Check if image is already cached
     if (imageCacheService.isImageLoaded(src)) {
       setLoading(false);
       setImageLoaded(true);
@@ -57,7 +56,6 @@ const ImageWithLoadingComponent: React.FC<ImageWithLoadingProps> = ({
       return;
     }
 
-    // Reset states when src changes and not cached
     setLoading(true);
     setShowSpinner(false);
     setError(false);
@@ -71,7 +69,6 @@ const ImageWithLoadingComponent: React.FC<ImageWithLoadingProps> = ({
       clearTimeout(spinnerTimeoutRef.current);
     }
 
-    // Show spinner after a small delay to prevent flickering for fast loads
     spinnerTimeoutRef.current = setTimeout(() => {
       setShowSpinner(true);
     }, 100);
@@ -197,5 +194,4 @@ const ImageWithLoadingComponent: React.FC<ImageWithLoadingProps> = ({
   );
 };
 
-// Memoized component for better performance
 export const ImageWithLoading = memo(ImageWithLoadingComponent);

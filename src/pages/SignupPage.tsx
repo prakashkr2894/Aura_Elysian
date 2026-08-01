@@ -21,17 +21,17 @@ export const SignupPage: React.FC = () => {
     setError("");
 
     try {
-      // Send JSON data for signup (without image for now)
-      const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/signup`, {
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("email", email);
+      formData.append("password", password);
+      if (imageFile) {
+        formData.append("image", imageFile);
+      }
+
+      const response = await fetch(`/api/signup`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-        }),
+        body: formData,
       });
 
       if (!response.ok) {
@@ -40,20 +40,18 @@ export const SignupPage: React.FC = () => {
       }
 
       const data = await response.json();
-      console.log("Signup response:", data);
+
 
       const { result, token } = data;
-      console.log("Signup successful:", result);
-      console.log("Token received:", token ? "Yes" : "No");
 
-      // Store token for automatic login
+
+
       localStorage.setItem("token", token);
-      console.log("Token stored in localStorage");
 
-      // Redirect to homepage after successful signup and login
+
       navigate("/");
     } catch (err: unknown) {
-      console.error("Signup error:", err);
+
       setError(err instanceof Error ? err.message : "An error occurred");
     }
   };

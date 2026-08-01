@@ -43,7 +43,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   }, [quantity]);
 
   useEffect(() => {
-    // Check if image is already cached
     if (imageCacheService.isImageLoaded(product.primaryImage)) {
       setImageLoaded(true);
       setIsInView(true);
@@ -54,7 +53,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsInView(true);
-          // Preload the image when it comes into view
           imageCacheService.preloadImage(product.primaryImage).then(() => {
             setImageLoaded(true);
           }).catch(() => {

@@ -11,7 +11,6 @@ const CustomOrderPage: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if there's stored form data from previous attempt
     const storedData = localStorage.getItem('customOrderData');
     if (storedData) {
       const { description, referenceLink } = JSON.parse(storedData);
@@ -34,7 +33,6 @@ const CustomOrderPage: React.FC = () => {
 
     const token = localStorage.getItem('token') || localStorage.getItem('aura-token');
     if (!token) {
-      // Store form data and redirect to login
       const formData = {
         description,
         referenceLink,
@@ -51,7 +49,7 @@ const CustomOrderPage: React.FC = () => {
     if (referenceLink) formData.append('referenceLink', referenceLink);
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/custom-orders`, formData, {
+      const response = await axios.post(`/api/custom-orders`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`,
@@ -62,7 +60,6 @@ const CustomOrderPage: React.FC = () => {
       setDescription('');
       setReferenceLink('');
     } catch (error) {
-      console.error('Error submitting custom order:', error);
       setMessage('Failed to submit custom order. Please try again.');
     } finally {
       setLoading(false);

@@ -12,7 +12,6 @@ export const Navbar: React.FC = () => {
   const location = useLocation();
   const { getCartCount } = useCart();
 
-  // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -27,7 +26,6 @@ export const Navbar: React.FC = () => {
     { href: '/custom', label: 'Custom' },
     { href: '/orders', label: 'Order History' },
   ];
-
 
   const isActive = (href: string) => location.pathname === href;
 

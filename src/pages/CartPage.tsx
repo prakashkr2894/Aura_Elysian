@@ -12,14 +12,11 @@ export const CartPage: React.FC = () => {
     const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
     useEffect(() => {
-        // Dynamically load Razorpay checkout script
         const script = document.createElement('script');
         script.src = 'https://checkout.razorpay.com/v1/checkout.js';
         script.async = true;
-        document.body.appendChild(script); 
-        return () => {
-            document.body.removeChild(script);
-        };
+        document.body.appendChild(script);
+        return () => { document.body.removeChild(script); };
     }, []);
 
     const handleCheckout = async () => {
@@ -32,15 +29,14 @@ export const CartPage: React.FC = () => {
         setMessage('');
 
         try {
-            // Call backend to create Razorpay order
             const { data: razorpayOrder } = await axios.post(
-                `${import.meta.env.VITE_SERVER_URL}/api/razorpay/order`,
+                `/api/razorpay/order`,
                 { amount: total },
                 { headers: { Authorization: `Bearer ${localStorage.getItem('token') || localStorage.getItem('aura-token')}` } },
             );
 
             const options = {
-            key: 'rzp_test_Risv0DiB8AgNG0', // Razorpay test key_id
+                key: 'rzp_test_Risv0DiB8AgNG0',
                 amount: razorpayOrder.amount,
                 currency: razorpayOrder.currency,
                 name: 'Aura Elysian',
@@ -48,9 +44,8 @@ export const CartPage: React.FC = () => {
                 order_id: razorpayOrder.id,
                 handler: async function (response: any) {
                     try {
-                        // Save order details in backend
                         await axios.post(
-                            `${import.meta.env.VITE_SERVER_URL}/api/orders`,
+                            `/api/orders`,
                             {
                                 products: cart.map(item => ({
                                     productId: item.productId,
@@ -69,18 +64,12 @@ export const CartPage: React.FC = () => {
                         setMessage('Payment successful! Your order has been placed.');
                         clearCart();
                     } catch (error) {
-                        console.error('Error saving order:', error);
                         setMessage('Payment succeeded but failed to save order. Please contact support.');
                     }
                     setIsPaymentProcessing(false);
                 },
-                prefill: {
-                    // Optionally prefill user's details if available
-                    email: '', // You can add user email here if you have it in context
-                },
-                theme: {
-                    color: '#f472b6',
-                },
+                prefill: { email: '' },
+                theme: { color: '#f472b6' },
                 modal: {
                     ondismiss: () => {
                         setIsPaymentProcessing(false);
@@ -92,7 +81,6 @@ export const CartPage: React.FC = () => {
             const rzp = new (window as any).Razorpay(options);
             rzp.open();
         } catch (error) {
-            console.error('Error initiating payment:', error);
             setMessage('Failed to initiate payment. Please try again.');
             setIsPaymentProcessing(false);
         }

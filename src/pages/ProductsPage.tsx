@@ -29,7 +29,6 @@ export const ProductsPage: React.FC = () => {
   const { cart, updateCartItemQuantity } = useCart();
   const { filterOptions, filterState, updateFilterState, resetFilters, loading: filterLoading, applyCollectionFilter } = useFilters();
 
-  // Check if any filters are active
   const hasActiveFilters = filterState.selectedFestivals.length > 0 ||
     filterState.selectedFragrances.length > 0 ||
     filterState.selectedThemes.length > 0 ||
@@ -45,7 +44,6 @@ export const ProductsPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [festivalInput, setFestivalInput] = useState<string>('');
 
-  // Preload product images for better performance
   const productImages = allProducts.map(product => product.primaryImage);
   useImagePreload(productImages, allProducts.length > 0);
 
@@ -55,14 +53,11 @@ export const ProductsPage: React.FC = () => {
     updateCartItemQuantity(productId, quantity);
   };
 
-  // Fetch products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const res = await axios.get<Product[]>('/api/products');
         const products = res.data;
-
-        console.log('Fetched products:', products);
 
         setAllProducts(products.map((p: Product & { _id: string }) => ({
           ...p,
@@ -70,13 +65,11 @@ export const ProductsPage: React.FC = () => {
         })) as Product[]);
 
       } catch (error) {
-        console.error("Error fetching products:", error);
       }
     };
     fetchProducts();
   }, []);
 
-  // Apply collection filter from URL parameters
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const collectionTitle = urlParams.get('collection');
@@ -86,10 +79,8 @@ export const ProductsPage: React.FC = () => {
     }
   }, [location.search, filterOptions, filterLoading, applyCollectionFilter]);
 
-  // Filter products based on current filter state
   const { filteredProducts } = useProductFilters(allProducts);
 
-  // Sort products
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     switch (sortBy) {
       case 'price-low':

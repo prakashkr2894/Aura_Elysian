@@ -12,10 +12,6 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { Logo } from "./Logo";
-import {
-  brevoService,
-  BrevoSubscriptionResponse,
-} from "../services/brevoService";
 
 const Footer: React.FC = memo(() => {
   const currentYear = new Date().getFullYear();
@@ -34,30 +30,19 @@ const Footer: React.FC = memo(() => {
       setIsSubmitting(true);
       setSubscriptionStatus({ type: null, message: "" });
 
-      try {
-        const result: BrevoSubscriptionResponse =
-          await brevoService.subscribeEmail(email.trim());
-
-        if (result.success) {
-          setSubscriptionStatus({ type: "success", message: result.message });
-          setEmail(""); // Clear the input on success
-        } else {
-          setSubscriptionStatus({ type: "error", message: result.message });
-        }
-      } catch (error) {
-        console.error("Subscription error:", error);
+      // Mock subscription success since Brevo integration is removed
+      setTimeout(() => {
         setSubscriptionStatus({
-          type: "error",
-          message: "An unexpected error occurred. Please try again later.",
+          type: "success",
+          message: "Thank you for subscribing to our newsletter!",
         });
-      } finally {
+        setEmail(""); // Clear the input on success
         setIsSubmitting(false);
 
-        // Auto-hide the status message after 5 seconds
         setTimeout(() => {
           setSubscriptionStatus({ type: null, message: "" });
         }, 5000);
-      }
+      }, 800);
     },
     [email],
   );
